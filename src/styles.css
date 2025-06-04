@@ -6,7 +6,41 @@
 }
 
 
+@font-face {
+  font-family: "Insolata" ;
+  src: url("/Inconsolata-Bold.ttf");
+}
 
+@font-face {
+  font-family: "Insolata" ;
+  src: url("/Inconsolata-Regular.ttf");
+}
+
+body {
+  font-family: "Insolata";
+}
+
+/* ===== Scrollbar CSS ===== */
+  /* Firefox */
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: #1cd99b #1f3b43;
+  }
+
+  /* Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: -1px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: #ffffff;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: #1cd99b;
+    border-radius: 10px;
+    border: 3px solid #ffffff;
+  }
 
 
 @plugin "daisyui/theme" {
@@ -48,7 +82,7 @@
 
 .hidden-frame{
   animation-name: frames ;
-  animation-duration: 400ms;
+  animation-duration: 600ms;
 }
 
 

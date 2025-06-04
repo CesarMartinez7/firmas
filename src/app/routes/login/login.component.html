@@ -2,10 +2,12 @@
     <div class="absolute inset-0 z-0 bg-black/50 backdrop-blur-sm blur-xs">
 
     </div>
-    <div class="rounded-md absolute shadow-md p-4 bg-base-100 w-lg inset-[999] " >
+    <div class="rounded-lg absolute shadow-md p-4 bg-base-100 w-lg inset-[999] " >
         <form [formGroup]="form" class="flex flex-col gap-4" (submit)="handleSubmit()" >
-            <h1 class="title text-2xl ">Bienvenido</h1>
+            <h1 class="title text-2xl text-center ">Bienvenido</h1>
+            
             <label class="input validator w-full">
+              
                 <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                   <g
                     stroke-linejoin="round"
@@ -55,7 +57,7 @@
                   title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
                 />
               </label>
-              <button class="btn btn-primary" (click)="handleSubmit()" >Iniciar Sesion</button>
+              <button class="btn btn-neutral uppercase" (click)="handleSubmit()" >Iniciar Sesion</button>
         </form>
     </div>
 </div>

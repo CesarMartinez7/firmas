@@ -10,7 +10,7 @@ export interface ResponseFilesPrevisualizar {
 }
 
 export interface Data {
-  archivos: string[];
+  archivos: {nombre: string; peso_mb: string}[];
   comando: string;
   nombre_zip: string;
   ruta_remota: string;
@@ -31,9 +31,33 @@ export interface Datum {
 }
 
 export interface Respuesta {
-  mensaje:     string;
-  ruta_remota: string;
+  mensaje?:     string;
+  ruta_remota?: string;
+  error: string
+  estado: number
 }
+
+export interface ResponseComandos {
+  data:  DataComand[];
+  error:   boolean;
+  message: string;
+  status:  number;
+}
+
+export interface DataComand {
+  Comando: string;
+  Label:   string;
+  Numero:  number;
+}
+
+export interface ResponseComandoExec {
+  data: {ruta: string; salida: string[]};
+  error: boolean;
+  message: string;
+  status: number
+}
+
+
 
 
 @Injectable({
@@ -54,4 +78,14 @@ export class CargasFilesService {
   confirmFile(zip_id: string) {
     return this.HTTP.post<ResponseConfirmados>(`${environment.url}/confirmar`, { zip_id });
   }
+
+  getComandosFiles(){
+    return this.HTTP.get<ResponseComandos>(`${environment.url}/lista`)
+  }
+
+  executeComandoFiles(body: {accion: string; nombre_carpeta: string; ruta?: string }) {
+    console.log(body)
+    return this.HTTP.post<ResponseComandoExec>(`${environment.url}/comando`, body)
+  }
+
 }
