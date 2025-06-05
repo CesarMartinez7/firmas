@@ -20,32 +20,36 @@ export class LoginComponent {
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      username: "droides",
-      password: "17111711"
+      username: ["droides", Validators.required],
+      password: ["17111711", Validators.required ]
     })
-    
+
   }
 
-  constructor(private fb: FormBuilder){}
+  constructor(private fb: FormBuilder) { }
 
-  handleSubmit() : void{
+  handleSubmit(): void {
 
     const body = {
       username: this.form.get("username")?.value,
       password: this.form.get("password")?.value
     }
-    
+
 
     this.AuthService.authGetToken(body).subscribe({
-      next:(resp) => {
-        if(resp.status === 200){
-          sessionStorage.setItem("jwt", resp.data.token )
+      next: (resp) => {
+        if (resp.status === 200) {
+          sessionStorage.setItem("jwt", resp.data.token)
           this.ROUTER.navigateByUrl("home")
+          sessionStorage.setItem("username", this.form.get("username")?.value)
+          sessionStorage.setItem("password", this.form.get("password")?.value)
         }
       }
     })
+  }
 
-
+  handleClickCreateAccount(): void {
+    window.alert("No se integra esta funcionalidad. ")
   }
 
 }

@@ -20,6 +20,10 @@ body {
   font-family: "Insolata";
 }
 
+* {
+  @apply transition-all duration-300
+}
+
 /* ===== Scrollbar CSS ===== */
   /* Firefox */
   * {

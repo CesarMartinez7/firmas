@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { Subscription } from 'rxjs';
 import {
   CargasFilesService,
   ResponseComandoExec,
@@ -11,9 +12,10 @@ import { NavbarComponent } from '../../core/global-components/navbar/navbar.comp
 import { FooterComponent } from '../../core/global-components/footer/footer.component';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 
-import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Validators } from '@angular/forms';
+
 
 // Icons ✅
 import { heroArrowUpTray } from '@ng-icons/heroicons/outline';
@@ -40,7 +42,7 @@ import { heroCodeBracket } from '@ng-icons/heroicons/outline';
       heroCloudArrowDown,
       heroCloudArrowUp,
       heroEye,
-      heroCodeBracket
+      heroCodeBracket,
     }),
   ],
   styleUrl: './home.component.css',
@@ -59,50 +61,76 @@ export class HomeComponent {
   FilesResponse!: ResponseFilesPrevisualizar;
   ResponseComandosExec!: ResponseComandoExec;
 
+  sub = new Subscription()
 
   baseUrl!: string 
 
-
-  handleClickCopy(event: Event) {
-    console.log(event.target)
-    let el = event.target as HTMLDivElement
-    navigator.clipboard.writeText(el.textContent || "")
-  }
-
-
+  
+  isLoadingResponseConfirm: boolean =   false
+  isLoadingResponsePreview: boolean =   false
+  isLoadingResponseComand: boolean =    false
+  
+  
+  
   constructor(private fb: FormBuilder) {}
-
+  
   private initForm() {
     this.form = this.fb.group({
       accion: ['2', [Validators.required]],
-      nombre_carpeta: ['', [Validators.required,]],
-      ruta: ['', []],
+      nombre_carpeta: ["", []],
+      ruta: ['', [Validators.required]],
     });
   }
-
+  
   ngOnInit(): void {
     window.scrollTo({
       behavior: 'smooth',
       top: 0,
     });
-
     this.initForm();
 
-    
+    this.form.get("accion")?.value === 1 ?  this.form.get("nombre_carpeta")?.disable() : this.form.get("nombre_carpeta")?.disable()
 
-    this.CargasFilesServices.getComandosFiles().subscribe({
+    this.form.get("accion")?.valueChanges.subscribe({
       next: (resp) => {
-        this.ResponseComandosList = resp;
-      },
-    });
-  }
+        if(resp === "2") {
+          this.form.get("nombre_carpeta")?.disable()
+        }
 
+       
+        
+        if(resp === "1"){
+          console.log("tercera")
+          this.form.get("nombre_carpeta")?.enable()
+        }
+      }
+    })
+  
+    this.sub.add(
+      this.CargasFilesServices.getComandosFiles().subscribe({
+        next: (resp) => {
+          this.ResponseComandosList = resp;        
+        },
+      })
+    )
+  }
+  
+  
+  ngOnDestroy(): void {
+    this.sub.unsubscribe()
+  }
+  
+  handleClickCopy(event: Event) {
+    console.log(event.target)
+    let el = event.target as HTMLDivElement
+    navigator.clipboard.writeText(el.textContent || "")
+  }
   handleSubmitComando(event: SubmitEvent) {
     event.preventDefault();
     const body = {
       accion: this.form.get('accion')?.value,
       nombre_carpeta: `/${this.form.get('nombre_carpeta')?.value}`,
-      ruta: this.form.get('ruta')?.value,
+      ruta: `/${this.form.get('ruta')?.value}`,
     };
 
     console.log(`Aqui esta el body ${body}`);
@@ -117,12 +145,15 @@ export class HomeComponent {
   }
 
   handleSubmitConfirmFiles() {
+    this.isLoadingResponseConfirm = true
     if (sessionStorage.getItem('zip_id')) {
       this.CargasFilesServices.confirmFile(
         sessionStorage.getItem('zip_id') || ''
       ).subscribe({
         next: (resp) => {
+          this.isLoadingResponseConfirm = false
           this.FilesConfirmResponse = resp;
+          
         },
         error: (err) => {
           console.log(`Error ${err}`);

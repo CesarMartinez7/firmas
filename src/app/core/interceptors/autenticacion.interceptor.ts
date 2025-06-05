@@ -24,7 +24,7 @@ export const autenticacionInterceptor: HttpInterceptorFn = (req, next) => {
       ) {
         console.warn('Token expirado o inválido. Redirigiendo al login...');
         sessionStorage.removeItem('jwt');
-        router.navigate(['/login']); // Redirige según tu ruta de login
+        router.navigate(['/login']); 
       }
 
       return throwError(() => error);
