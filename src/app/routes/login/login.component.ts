@@ -27,7 +27,6 @@ export class LoginComponent {
       username: ["droides", Validators.required],
       password: ["17111711", Validators.required ]
     })
-
   }
 
   constructor(private fb: FormBuilder) { }

@@ -142,6 +142,8 @@ export class HomeComponent {
       behavior: 'smooth',
       top: 0,
     });
+
+    this.notyf.success(`Bienvenido ${sessionStorage.getItem("username")}`)
     this.initForm();
     this.datoCurioso = this.datosCuriososComputadoras[this.getRandomNumber()]
     this.form.get("accion")?.value === 1 ?  this.form.get("nombre_carpeta")?.disable() : this.form.get("nombre_carpeta")?.disable()

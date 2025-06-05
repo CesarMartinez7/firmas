@@ -87,16 +87,16 @@ body {
 
 .hidden-frame{
   animation-name: frames ;
-  animation-duration: 600ms;
+  animation-duration: 1000ms;
 }
 
 
 
 @keyframes frames {
     0% {
-      scale: 0;
+      opacity: 0;
     }
     100% {
-      scale: 1;
+      opacity: 1;
     }
 }
