@@ -210,10 +210,10 @@
           </span>
         </div>
   
-        <div class="max-h-44 overflow-y-auto divide-none">
+        <div class="max-h-44 overflow-y-scroll divide-y-2 divide-base-300 ">
           @for (item of FilesResponse.data.archivos; track $index) {
           <div
-            class="p-4 rounded-lg transition-colors border-base-300 hover:bg-base-300 hover:text-white flex flex-col gap-2"
+            class="p-4 rounded-lg transition-colors bg-base-100 hover:bg-base-300 hover:text-white flex flex-col gap-2"
           >
             <span class="font-mono break-words font-black">{{ item.nombre }}</span>
             <span class="badge badge-info badge-soft badge-xs">{{item.peso_mb}}</span>
@@ -226,7 +226,7 @@
         >
           <ng-icon size="60px" name="heroDocumentMinus" />
           <p class="text-xs font-light">Por favor cargar algunos</p>
-          <span>No hay archivos cargados para la Previsualizacion.</span>
+          <span class="text-green-400">No hay archivos cargados para la Previsualizacion.</span>
         </div>
         }
       </div>
