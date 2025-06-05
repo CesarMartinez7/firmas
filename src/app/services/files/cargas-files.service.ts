@@ -75,8 +75,8 @@ export class CargasFilesService {
     );
   }
 
-  confirmFile(zip_id: string) {
-    return this.HTTP.post<ResponseConfirmados>(`${environment.url}/confirmar`, { zip_id });
+  confirmFile(zip_id: string, ruta_save: string) {
+    return this.HTTP.post<ResponseConfirmados>(`${environment.url}/confirmar`, { zip_id: zip_id, c_ruta: ruta_save });
   }
 
   getComandosFiles(){

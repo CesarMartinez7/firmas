@@ -70,7 +70,7 @@
           }@else if (isLoadingResponseComand) {
             <div class="h-full grid-rows-2 flex justify-center-safe  items-center flex-col ">
               <p>Cargando ...</p>
-              <p class="text-xs">Datos curiosos: <b class="text-cyan-400">{{datosCuriososComputadoras[getRandomNumber()]}}</b> </p>
+              <p class="text-xs">Datos curiosos: <b class="text-cyan">{{datosCuriososComputadoras[getRandomNumber()]}}</b> </p>
             </div>
           }
           
@@ -96,13 +96,11 @@
       </div>
       <span class="ml-4 text-sm text-gray-300"></span>
     </div>
-
-    
       <h3 class="text-2xl text-center text-green-400 font-black mt-4">Confirmados</h3>
-      <div class="px-4 flex justify-center items-center h-full  overflow-hidden">      
+      <div class="">
         @if (FilesConfirmResponse) {
-          <p class="text-sm">{{FilesConfirmResponse.message}}</p>
-          <ol class="flex flex-col gap-3 mt-6 h-full overflow-y-auto ">
+          <p class="text-sm p-3">{{FilesConfirmResponse.message}}</p>
+          <ol class="flex flex-col gap-3 mt-6 h-full overflow-y-scroll ">
           @for (item of FilesConfirmResponse.data;
         track $index) {
         <li
@@ -135,6 +133,20 @@
           </li>
           }
         </ol>
+      }@else if (loadFileName) {
+        <div class="w-full h-full  grid place-content-center hidden-frame">
+          
+            <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
+              <legend class="fieldset-legend">Confirmados</legend>
+              <label class="label">Ruta a guardar</label>
+              <input type="text" class="input" placeholder="PDFS..." [(ngModel)]="rutaSave"  name="rutaSave" />
+              <button class="btn btn-neutral mt-4" type="submit" (click)="handleSubmitConfirmFiles($event)"  >Guardar Archivos</button>
+            </fieldset>
+          
+
+        </div>
+
+        
       }
         @else {
         <div class="h-full flex justify-center items-center flex-col ">
@@ -258,14 +270,8 @@
           <ng-icon name="heroEye" size="20px" />
           Previsualizar Archivos
         </button>
-        <button
-          class="btn w-full uppercase font-bold"
-          (click)="handleSubmitConfirmFiles()"
-        >
-          <ng-icon name="heroArrowUpTray" size="20px" />
-          Confirmar CARGUE
-        </button>
-        <button class="btn w-full btn-error uppercase">Cancelar</button>
+        
+        <button class="btn w-full btn-error uppercase" (click)="handleClickCancelFlujo()">Cancelar</button>
       </div>
     </div>
   </div>

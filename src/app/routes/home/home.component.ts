@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 import {
   CargasFilesService,
   ResponseComandoExec,
@@ -32,6 +33,7 @@ import { heroCodeBracket } from '@ng-icons/heroicons/outline';
     NgIcon,
     CommonModule,
     FooterComponent,
+    FormsModule,
     ReactiveFormsModule,
   ],
   templateUrl: './home.component.html',
@@ -58,7 +60,7 @@ export class HomeComponent {
 
   ResponseComandosList!: ResponseComandos;
   FilesConfirmResponse!: ResponseConfirmados;
-  FilesResponse!: ResponseFilesPrevisualizar;
+  FilesResponse!: ResponseFilesPrevisualizar | null;
   ResponseComandosExec!: ResponseComandoExec;
 
   sub = new Subscription()
@@ -70,6 +72,8 @@ export class HomeComponent {
   isLoadingResponseConfirm: boolean =   false
   isLoadingResponsePreview: boolean =   false
   isLoadingResponseComand: boolean =    false
+
+  rutaSave: string = ""
 
   datosCuriososComputadoras : string[] = [
     "La primera computadora electrónica, ENIAC, pesaba más de 27 toneladas.",
@@ -103,6 +107,7 @@ export class HomeComponent {
       accion: ['2', [Validators.required]],
       nombre_carpeta: ["", []],
       ruta: ['', [Validators.required]],
+      
     });
   }
   
@@ -168,22 +173,40 @@ export class HomeComponent {
     })
   }
 
-  handleSubmitConfirmFiles() {
+  handleSubmitConfirmFiles(event: Event) {
+    event.preventDefault()
+    
     this.isLoadingResponseConfirm = true
     if (sessionStorage.getItem('zip_id')) {
       this.CargasFilesServices.confirmFile(
-        sessionStorage.getItem('zip_id') || ''
+        sessionStorage.getItem('zip_id') || '', `/${this.rutaSave}`
       ).subscribe({
         next: (resp) => {
           this.isLoadingResponseConfirm = false
           this.FilesConfirmResponse = resp;
-          
         },
         error: (err) => {
           console.log(`Error ${err}`);
         },
       });
     }
+  }
+
+
+  handleClickCancelFlujo(): void {
+    console.log("kdsfdslkf")
+    this.isLoadingResponseComand = false
+    this.isDisableBtnPreview = false
+    this.isLoadingResponsePreview = false
+    this.isLoadingResponseComand = false
+    this.rutaSave = ""
+    this.loadFileName = ""
+    this.FilesResponse = null
+
+
+    // isLoadingResponseConfirm: boolean =   false
+    // isLoadingResponsePreview: boolean =   false
+    // isLoadingResponseComand: b
   }
 
   onChangeFile(target: Event) {

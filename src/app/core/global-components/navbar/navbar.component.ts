@@ -16,7 +16,7 @@ export class NavbarComponent {
   userName = sessionStorage.getItem("username")
   ROUTER = inject(Router)
 
-  date = new Date()
+  date = new Date().getUTCDate()
 
   handleClickLogout(){
     console.log("jdsjfsfsf")
