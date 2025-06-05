@@ -1,9 +1,11 @@
 import { Component, inject } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import {
   CargasFilesService,
-  ResponseComandoExec,
+  
+  ResponseComandoExecLs,
+  ResponseComandoExecMkdir,
   ResponseComandos,
   ResponseConfirmados,
   ResponseFilesPrevisualizar,
@@ -20,14 +22,13 @@ import { Validators } from '@angular/forms';
 import { HostListener } from '@angular/core';
 
 // Icons ✅
-import { heroArrowUpTray } from '@ng-icons/heroicons/outline';
-import { heroCloudArrowDown } from '@ng-icons/heroicons/outline';
-import { heroCloudArrowUp } from '@ng-icons/heroicons/outline';
+import { heroArrowUpTray, heroCommandLine, heroDocument, heroCloudArrowDown, heroCloudArrowUp } from '@ng-icons/heroicons/outline';
 import { heroDocumentMinus } from '@ng-icons/heroicons/outline';
 import { heroEye } from '@ng-icons/heroicons/outline';
 import { heroTrash } from '@ng-icons/heroicons/outline';
 import { heroCodeBracket } from '@ng-icons/heroicons/outline';
 import { heroDocumentChartBar } from '@ng-icons/heroicons/outline';
+import { heroFolderOpen } from '@ng-icons/heroicons/outline';
 
 import { Notyf } from 'notyf';
 import 'notyf/notyf.min.css'; 
@@ -52,6 +53,9 @@ import 'notyf/notyf.min.css';
       heroEye,
       heroCodeBracket,
       heroTrash,
+      heroFolderOpen,
+      heroDocument,
+      heroCommandLine,
       heroDocumentChartBar
     }),
   ],
@@ -66,7 +70,8 @@ export class HomeComponent {
       this.isBlurNavbar = true
     }
   }
-
+  
+  private notyf = new Notyf();
   isBlurNavbar = false
   isLoading: boolean = false;
   CargasFilesServices = inject(CargasFilesService);
@@ -79,7 +84,11 @@ export class HomeComponent {
   ResponseComandosList!: ResponseComandos;
   FilesConfirmResponse!: ResponseConfirmados;
   FilesResponse!: ResponseFilesPrevisualizar | null;
-  ResponseComandosExec!: ResponseComandoExec;
+
+  isLs!: boolean
+
+  ResponseComandosLs!: ResponseComandoExecLs
+  ResponseComandosMkdir!: ResponseComandoExecMkdir
 
   sub = new Subscription()
 
@@ -87,7 +96,6 @@ export class HomeComponent {
 
   loadFileName : string = ""
 
-  private notyf = new Notyf();
   
   isLoadingResponseConfirm: boolean =   false
   isLoadingResponsePreview: boolean =   false
@@ -124,11 +132,13 @@ export class HomeComponent {
   }
 
   private initForm() {
+
+    
+
     this.form = this.fb.group({
       accion: ['2', [Validators.required]],
       nombre_carpeta: ["", []],
-      ruta: ['', [Validators.required]],
-      
+      ruta: ['/', [Validators.required]],
     });
   }
   
@@ -175,24 +185,43 @@ export class HomeComponent {
   handleSubmitComando(event: SubmitEvent) {
     event.preventDefault();
 
-    this.isLoadingResponseComand = true
     const body = {
       accion: this.form.get('accion')?.value,
-      nombre_carpeta: `/${this.form.get('nombre_carpeta')?.value}`,
+      nombre_carpeta: `${this.form.get('nombre_carpeta')?.value}`    ,
       ruta: `/${this.form.get('ruta')?.value}`,
     };
-    this.CargasFilesServices.executeComandoFiles(body).subscribe({
-      next: (resp) => {
-        this.notyf.success(`${resp.message}`)
-        this.ResponseComandosExec = resp;
-        this.isLoadingResponseComand = false
-      },
-      error: (err) => {
-        console.error(`Error ${err}`);
-      },
-    })
+    
+    if(this.form.invalid){
+      this.notyf.error("Campos Invalidos")
+    }else{
+      this.isLs = this.form.get("accion")?.value === 1 ? false : true
+      console.log(this.isLs)
+      this.isLoadingResponseComand = true
+
+      if(this.isLs){
+        this.CargasFilesServices.executeComandoLs(body).subscribe({
+          next: (resp) => {
+            this.ResponseComandosLs = resp
+          },error: (err) => {
+            this.notyf.error(`Error ${err}`)
+          }
+        })
+      }else{
+        this.CargasFilesServices.execueteComandoMkdir(body).subscribe({
+          next: (resp) => {
+            this.ResponseComandosMkdir = resp
+          },error: (err) => {
+            this.notyf.error(`Error ${err}`)
+          }
+        })
+      } 
+    }
   }
 
+
+  invalidControlsChange(control: string) {
+    return this.form.get(control)?.invalid ? true : false
+  }
 
 
   handleSubmitConfirmFiles(event: Event) {

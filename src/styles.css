@@ -2,7 +2,7 @@
 @import "tailwindcss";
 @import 'ngx-toastr/toastr';
 @plugin "daisyui" {
-  themes: dim --default, dark --prefersdark, dim
+  themes: dim --default, sunset --prefersdark, dim
   ;
 }
 

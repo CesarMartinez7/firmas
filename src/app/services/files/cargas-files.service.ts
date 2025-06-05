@@ -50,12 +50,21 @@ export interface DataComand {
   Numero:  number;
 }
 
-export interface ResponseComandoExec {
-  data: {ruta: string; salida: string[]};
+export interface ResponseComandoExecLs {
+  data: {ruta: string; Directorios: {dir: string; nombre: string}[]};
   error: boolean;
   message: string;
   status: number
 }
+
+
+export interface ResponseComandoExecMkdir {
+  data: {ruta: string; salida:string[]};
+  error: boolean;
+  message: string;
+  status: number
+}
+
 
 
 
@@ -83,8 +92,12 @@ export class CargasFilesService {
     return this.HTTP.get<ResponseComandos>(`${environment.url}/lista`)
   }
 
-  executeComandoFiles(body: {accion: string; nombre_carpeta: string; ruta?: string }) {
-    return this.HTTP.post<ResponseComandoExec>(`${environment.url}/comando`, body)
+  executeComandoLs(body: {accion: string; nombre_carpeta: string; ruta?: string } ) {
+      return this.HTTP.post<ResponseComandoExecLs>(`${environment.url}/comando`, body)
+  }
+
+  execueteComandoMkdir(body: {accion: string; nombre_carpeta: string; ruta?: string }) {
+    return this.HTTP.post<ResponseComandoExecMkdir>(`${environment.url}/comando`, body)
   }
 
 }

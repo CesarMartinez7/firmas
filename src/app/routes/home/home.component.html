@@ -2,10 +2,10 @@
 <div class="w-full min-h-svh grid lg:grid-cols-2 space-x-5 p-2 md:px-12 py-6">
   <div class="grid grid-rows-2 gap-2">
     <div
-      class="w-full relative text-green-400 font-mono rounded-2xl shadow-md  border  border-base-300/50 bg-gradient-to-tr from-base-100 via-base-300 to-base-100 "
+      class="w-full relative text-green-400 font-mono rounded-2xl shadow-md border border-base-300/50 bg-gradient-to-tr from-base-100 via-base-300 to-base-100"
     >
       <!-- Header estilo barra de ventana -->
-      <div class="flex items-center px-4 py-2 bg-re border-b border-gray-700 ">
+      <div class="flex items-center px-4 py-2 bg-re border-b border-gray-700">
         <div class="flex space-x-2">
           <span class="w-3 h-3 bg-red-500 rounded-full"></span>
           <span class="w-3 h-3 bg-yellow-500 rounded-full"></span>
@@ -13,7 +13,9 @@
         </div>
         <span class="ml-4 text-sm text-gray-300"></span>
       </div>
-      <div class="p-4 w-full h-full grid grid-rows-2 md:grid-rows-1 md:grid-cols-2 ">
+      <div
+        class="p-4 w-full h-full grid grid-rows-2 md:grid-rows-1 md:grid-cols-2"
+      >
         <form
           [formGroup]="form"
           (submit)="handleSubmitComando($event)"
@@ -23,21 +25,23 @@
           <h3 class="font-bold text-2xl my-4">Entrada de Comandos</h3>
           <select class="select w-full" formControlName="accion">
             @for (item of ResponseComandosList.data; track $index) {
-              <option [value]="item.Numero" class="flex flex-col"  >
-                <span>{{ item.Label }} </span>
-              </option>
+            <option [value]="item.Numero" class="flex flex-col">
+              <span>{{ item.Label }} </span>
+            </option>
             }
           </select>
-          
+
           <fieldset class="fieldset w-full">
             <legend class="fieldset-legend w-full">Nombre carpeta</legend>
             <input
-                type="text"
-                class="input w-full "
-                placeholder="testing"
-                formControlName="nombre_carpeta"
-              />
-            
+              type="text"
+              class="input w-full"
+              placeholder="Digita tu carpeta"
+              formControlName="nombre_carpeta"
+              [ngClass]="{
+                  `input-success`: invalidControlsChange(`nombre_carpeta`)
+                }"
+            />
           </fieldset>
           <fieldset class="fieldset w-full">
             <legend class="fieldset-legend w-full">Ruta</legend>
@@ -46,118 +50,174 @@
               class="input w-full"
               placeholder="Rutas"
               formControlName="ruta"
+              [ngClass]="{
+                `input-success`: invalidControlsChange(`ruta`)
+              }"
             />
             <p class="label">Opcional</p>
           </fieldset>
-          <button class="btn w-full" type="submit">EJECUTAR</button>
+          <button class="btn w-full btn-neutral" type="submit">EJECUTAR</button>
 
           }
         </form>
-        <div class="p-4 relative h-full w-full ">
-          @if (ResponseComandosExec) {
-            <div class="flex justify-between">
-              <p class="text-xs">Server message: <span class="kbd-xs kbd whitespace-nowrap">{{ ResponseComandosExec.message }}</span> </p>
-              <div class="text-xs">Server Status:  <div class="kbd-xs kbd">{{ResponseComandosExec.status}}</div> </div>
-            </div>
+        <div class="p-4 relative h-full w-full">
 
-          <div class="absolute bottom-8 text-sm w-full  mask-b-from-20% mask-b-to-95% max-h-46 overflow-y-scroll">
-            @for (item of ResponseComandosExec.data.salida; track $index) {
-            <div>{{ item }}</div>
-            }
-          </div>
-          <p class="text-cyan-400 text-sm ">{{ResponseComandosExec.data.ruta}}</p>
-
-          }@else if (isLoadingResponseComand) {
-            <div class="h-full grid-rows-2 flex justify-center-safe  items-center flex-col ">
-              <p>Cargando ...</p>
-              <p class="text-xs">Datos curiosos: <b class="text-cyan">{{datoCurioso}}</b> </p>
-            </div>
+          @if (isLs) {
+            @if (ResponseComandosLs) {
+              <div class="flex justify-between">
+                <p class="text-xs">
+                  Server message:
+                  <span class="kbd-xs kbd whitespace-nowrap">{{
+                    ResponseComandosLs.message
+                  }}</span>
+                </p>
+                <div class="text-xs">
+                  Server Status:
+                  <div class="kbd-xs kbd">{{ ResponseComandosLs.status }}</div>
+                </div>
+              </div>
+    
+              <div
+                class="absolute bottom-8 text-sm w-full mask-b-from-20% mask-b-to-95% max-h-46 overflow-y-scroll"
+              >
+                @for (item of ResponseComandosLs.data.Directorios; track $index) {
+                <div class="relative">
+                  <span>
+                    @if (item.dir) {
+                    <ng-icon name="heroFolderOpen" />
+                    }@else {
+                    <ng-icon name="heroDocument" />
+                    }
+                  </span>
+                  <span [ngClass]="{
+                    `text-cyan-300` : item.dir
+                  }" >
+                    {{ item.nombre }}
+                  </span>
+                </div>
+                }
+              </div>
+              <p class="text-cyan-400 text-sm">
+                {{ ResponseComandosLs.data.ruta }}
+              </p>
+    
+              }
           }
-          
-          @else {
-            <div class=" h-full grid place-content-center-safe">
-              <ng-icon name="heroCodeBracket" color="white" size="60px" class="text-center self-center mx-auto" />
-              <p class="">No se ha ejecutado ningun comando ... </p>
-            </div>
+
+
+          @else if (isLoadingResponseComand) {
+          <div
+            class="h-full grid-rows-2 flex justify-center-safe items-center flex-col"
+          >
+            <p>Cargando ...</p>
+            <p class="text-xs">
+              Datos curiosos: <b class="text-cyan">{{ datoCurioso }}</b>
+            </p>
+          </div>
+          } @else {
+          <div class="h-full grid place-content-center-safe">
+            <ng-icon
+              name="heroCodeBracket"
+              color="white"
+              size="60px"
+              class="text-center self-center mx-auto"
+            />
+            <p class="">No se ha ejecutado ningun comando ...</p>
+          </div>
           }
         </div>
       </div>
     </div>
 
-
-    
     <div
-      class="overflow rounded-2xl h-full w-full min-h-full shadow-md border border-base-300/50  bg-gradient-to-tr from-base-100 via-base-300 to-base-100"
+      class="overflow rounded-2xl h-full w-full min-h-full shadow-md border border-base-300/50 bg-gradient-to-tr from-base-100 via-base-300 to-base-100"
     >
-    <div class="flex items-center px-4 py-2 bg-re border-b border-gray-700 ">
-      <div class="flex space-x-2">
-        <span class="w-3 h-3 bg-red-500 rounded-full"></span>
-        <span class="w-3 h-3 bg-yellow-500 rounded-full"></span>
-        <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+      <div class="flex items-center px-4 py-2 bg-re border-b border-gray-700">
+        <div class="flex space-x-2">
+          <span class="w-3 h-3 bg-red-500 rounded-full"></span>
+          <span class="w-3 h-3 bg-yellow-500 rounded-full"></span>
+          <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+        </div>
+        <span class="ml-4 text-sm text-gray-300"></span>
       </div>
-      <span class="ml-4 text-sm text-gray-300"></span>
-    </div>
       <!-- <h3 class="text-2xl text-center text-green-400 font-black mt-4">Confirmados</h3> -->
       <div class="h-full">
         @if (FilesConfirmResponse) {
-          <p class="text-sm p-3">{{FilesConfirmResponse.message}}</p>
-          <ol class="flex flex-col gap-3 mt-6 h-full overflow-y-scroll ">
-          @for (item of FilesConfirmResponse.data;
-        track $index) {
-        <li
-          class="p-1 px-3 border border-base-300/50 rounded-2xl font-mono shadow-sm flex flex-col"
-        >
-          <span class="font-bold">{{ item.archivo }}</span>
-          <span class="text-xs"
-            >Ruta:
-            <kbd class="kbd-xs kbd text-cyan-400">{{
-              item.respuesta.ruta_remota ? item.respuesta.ruta_remota : item.respuesta.error
-            }}</kbd>
-          </span>
-          <pre
-            class="text-sm"
-            [ngClass]="{
+        <p class="text-sm p-3">{{ FilesConfirmResponse.message }}</p>
+        <ol class="flex flex-col gap-3 mt-3 h-full overflow-y-scroll">
+          @for (item of FilesConfirmResponse.data; track $index) {
+          <li
+            class="p-1 px-3 border border-base-300/50 rounded-2xl font-mono shadow-sm flex flex-col"
+          >
+            <span class="font-bold">{{ item.archivo }}</span>
+            <span class="text-xs"
+              >Ruta:
+              <kbd class="kbd-xs kbd text-cyan-400">{{
+                item.respuesta.ruta_remota
+                  ? item.respuesta.ruta_remota
+                  : item.respuesta.error
+              }}</kbd>
+            </span>
+            <pre
+              class="text-sm"
+              [ngClass]="{
                 `text-success`  : item.respuesta.estado === 1,
                 `text-error` : item.respuesta.estado === 0
               }"
-            >{{ item.respuesta.mensaje }}</pre
-          >
-        </li>
-      
-        } </ol> 
-      }@else if (isLoadingResponseConfirm) {
-        <ol class="flex flex-col gap-2 overflow-y-hidden px-4 mt-5">
-          @for (item of [1,2,3,4,5]; track $index) {
-            <li
-            class="p-1 px-3 border border-base-300/50 rounded-2xl font-mono shadow-sm flex flex-col bg-base-300 animate-pulse h-[71px] w-full min-w-full"
-          >
+              >{{ item.respuesta.mensaje }}</pre
+            >
           </li>
+
           }
         </ol>
-      }@else if (loadFileName) {
-        <div class="w-full h-full  grid place-content-center hidden-frame">
-          
-            <fieldset class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
-              <legend class="fieldset-legend">Confirmados</legend>
-              <label class="label">Ruta a guardar</label>
-              <input type="text" class="input" placeholder="PDFS..." [(ngModel)]="rutaSave"  name="rutaSave" />
-              <button class="btn btn-neutral mt-4" type="submit" (click)="handleSubmitConfirmFiles($event)"  >Guardar Archivos</button>
-            </fieldset>
-        </div>        
-      }
-        @else {
-        <div class="h-full flex justify-center items-center flex-col ">
+        }@else if (isLoadingResponseConfirm) {
+        <ol class="flex flex-col gap-2 overflow-y-hidden px-4 mt-5">
+          @for (item of [1,2,3,4,5]; track $index) {
+          <li
+            class="p-1 px-3 border border-base-300/50 rounded-2xl font-mono shadow-sm flex flex-col bg-base-300 animate-pulse h-[71px] w-full min-w-full"
+          ></li>
+          }
+        </ol>
+        }@else if (loadFileName) {
+        <div class="w-full h-full grid place-content-center hidden-frame">
+          <fieldset
+            class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4"
+          >
+            <legend class="fieldset-legend">Confirmados</legend>
+            <label class="label">Ruta / Directorio a guardar</label>
+            <input
+              type="text"
+              class="input"
+              placeholder="PDFS..."
+              [(ngModel)]="rutaSave"
+              name="rutaSave"
+            />
+            <button
+              class="btn btn-neutral mt-4"
+              type="submit"
+              (click)="handleSubmitConfirmFiles($event)"
+            >
+              Guardar Archivos
+            </button>
+          </fieldset>
+        </div>
+        } @else {
+        <div class="h-full flex justify-center items-center flex-col">
           <ng-icon size="60px" name="heroDocumentChartBar" />
-          <p class="text-xs font-light mt-3 ">Por favor cargar algunos</p>
-          <span class="text-green-400">No hay archivo <b>ZIP</b> listo para la confirmacion.</span>
+          <p class="text-xs font-light mt-3">Por favor cargar algunos</p>
+          <span class="text-green-400"
+            >No hay archivo <b>ZIP</b> listo para la confirmacion.</span
+          >
         </div>
         }
       </div>
     </div>
   </div>
 
-  <div class=" bg-gradient-to-tr from-base-100 via-base-300 to-base-100 rounded-2xl border border-base-200">
-    <div class="flex items-center px-4 py-2 bg-re border-b border-gray-700 ">
+  <div
+    class="bg-gradient-to-tr from-base-100 via-base-300 to-base-100 rounded-2xl border border-base-200"
+  >
+    <div class="flex items-center px-4 py-2 bg-re border-b border-gray-700">
       <div class="flex space-x-2">
         <span class="w-3 h-3 bg-red-500 rounded-full"></span>
         <span class="w-3 h-3 bg-yellow-500 rounded-full"></span>
@@ -167,18 +227,22 @@
     </div>
 
     <div
-      class="h-full relative shadow-md  rounded-2xl border-base-200  px-6 grid grid-row-[1fr_1fr_auto]  "
+      class="h-full relative shadow-md rounded-2xl border-base-200 px-6 grid grid-row-[1fr_1fr_auto]"
     >
       <form
         (submit)="handleSubmitFile()"
         enctype="application/x-www-form-urlencoded"
       >
-        <h3 class="text-3xl my-4 text-center font-black text-green-400">Previsualizar</h3>
-        
-        <div class="flex border-2 rounded-2xl border-dashed w-full" [ngClass]="{
+        <h3 class="text-3xl my-4 text-center font-black text-green-400">
+          Previsualizar
+        </h3>
+        <div
+          class="flex border-2 rounded-2xl border-dashed w-full"
+          [ngClass]="{
           `border-cyan-400 `: loadFileName.length > 0,
-          `border-green-500`: loadFileName.length < 0
-        }" >
+          `border-green-500 `: loadFileName.length === 0
+        }"
+        >
           <label
             for="dropzone-file"
             class="flex flex-col items-center justify-center w-full h-64 rounded-2xl cursor-pointer"
@@ -187,13 +251,17 @@
               <ng-icon name="heroCloudArrowDown" size="50px" />
               <p class="mb-2 text-sm text-green-400">
                 @if (isDisableBtnPreview) {
-                  <span class="font-semibold">Click para cargar</span> o arrastra y
-                  suelta.
-                }@else {
-                  <span class="font-black">Archivo cargado <b class="text-cyan-400 uppercase">{{loadFileName}}</b> </span>
+                <span class="font-semibold">Click para cargar</span> o arrastra
+                y suelta. }@else {
+                <span class="font-black"
+                  >Archivo cargado
+                  <b class="text-cyan-400 uppercase">{{ loadFileName }}</b>
+                </span>
                 }
               </p>
-              <p class="text-xs text-gray-500 dark:text-gray-400">Archivos ZIP</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400">
+                Archivos ZIP
+              </p>
             </div>
             <input
               id="dropzone-file"
@@ -205,19 +273,23 @@
           </label>
         </div>
       </form>
-  
+
       <div class="p-4 text-sm hidden-frame mask-b-from-20% mask-b-to-80%">
         @if (FilesResponse) {
         <h2 class="text-lg font-semibold mb-2">Archivos Encontrados ✅</h2>
-  
+
         <div
           class="flex bg-base-200 flex-col sm:flex-row justify-between items-start sm:items-center gap-2 p-3 rounded-2xl shadow-sm mb-4"
         >
           <span class="kbd">
             {{ FilesResponse.data.nombre_zip }}
           </span>
-          
-          <span class=" cursor-pointer break-after-right text-sm kbd kbd-xs" (click)="handleClickCopy($event)" >{{FilesResponse.data.comando}}</span>
+
+          <span
+            class="cursor-pointer break-after-right text-sm kbd kbd-xs"
+            (click)="handleClickCopy($event)"
+            >{{ FilesResponse.data.comando }}</span
+          >
           <span
             class="font-monoink text-cyan-400 justify-end break-all flex flex-col items-end relative"
           >
@@ -233,14 +305,18 @@
             {{ baseUrl }}
           </span>
         </div>
-  
-        <div class="max-h-44 overflow-y-scroll divide-y-2 divide-base-300 ">
+
+        <div class="max-h-44 overflow-y-scroll divide-y-2 divide-base-300">
           @for (item of FilesResponse.data.archivos; track $index) {
           <div
             class="p-4 rounded-2xl transition-colors bg-base-100 hover:bg-base-300 hover:text-white flex flex-col gap-2"
           >
-            <span class="font-mono break-words font-black">{{ item.nombre }}</span>
-            <span class="badge badge-info badge-soft badge-xs">{{item.peso_kb}}</span>
+            <span class="font-mono break-words font-black">{{
+              item.nombre
+            }}</span>
+            <span class="badge badge-info badge-soft badge-xs">{{
+              item.peso_kb
+            }}</span>
           </div>
           }
         </div>
@@ -250,11 +326,13 @@
         >
           <ng-icon size="60px" name="heroDocumentMinus" />
           <p class="text-xs font-light">Por favor cargar algunos</p>
-          <span class="text-green-400">No hay archivos cargados para la Previsualizacion.</span>
+          <span class="text-green-400"
+            >No hay archivos cargados para la Previsualizacion.</span
+          >
         </div>
         }
       </div>
-  
+
       <div class="gap-2 relative grid grid-cols-2 w-full">
         <button
           class="btn w-full uppercase btn-neutral"
@@ -267,8 +345,13 @@
           <ng-icon name="heroEye" size="20px" />
           Previsualizar Archivos
         </button>
-        
-        <button class="btn w-full btn-error uppercase btn-soft" (click)="handleClickCancelFlujo()"> <ng-icon name="heroTrash" size="20px"/> Eliminar todo</button>
+
+        <button
+          class="btn w-full btn-error uppercase btn-soft"
+          (click)="handleClickCancelFlujo()"
+        >
+          <ng-icon name="heroTrash" size="20px" /> Eliminar todo
+        </button>
       </div>
     </div>
   </div>
