@@ -24,6 +24,7 @@ import { heroCloudArrowDown } from '@ng-icons/heroicons/outline';
 import { heroCloudArrowUp } from '@ng-icons/heroicons/outline';
 import { heroDocumentMinus } from '@ng-icons/heroicons/outline';
 import { heroEye } from '@ng-icons/heroicons/outline';
+import { heroTrash } from '@ng-icons/heroicons/outline';
 import { heroCodeBracket } from '@ng-icons/heroicons/outline';
 
 @Component({
@@ -45,6 +46,7 @@ import { heroCodeBracket } from '@ng-icons/heroicons/outline';
       heroCloudArrowUp,
       heroEye,
       heroCodeBracket,
+      heroTrash
     }),
   ],
   styleUrl: './home.component.css',
@@ -75,6 +77,7 @@ export class HomeComponent {
 
   rutaSave: string = ""
 
+  datoCurioso!: string
   datosCuriososComputadoras : string[] = [
     "La primera computadora electrónica, ENIAC, pesaba más de 27 toneladas.",
     "El primer ratón de computadora fue hecho de madera en 1964 por Douglas Engelbart.",
@@ -117,6 +120,8 @@ export class HomeComponent {
       top: 0,
     });
     this.initForm();
+
+    this.datoCurioso = this.datosCuriososComputadoras[this.getRandomNumber()]
 
     this.form.get("accion")?.value === 1 ?  this.form.get("nombre_carpeta")?.disable() : this.form.get("nombre_carpeta")?.disable()
     this.form.get("accion")?.valueChanges.subscribe({
