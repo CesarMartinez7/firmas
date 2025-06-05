@@ -84,7 +84,6 @@ export class CargasFilesService {
   }
 
   executeComandoFiles(body: {accion: string; nombre_carpeta: string; ruta?: string }) {
-    console.log(body)
     return this.HTTP.post<ResponseComandoExec>(`${environment.url}/comando`, body)
   }
 

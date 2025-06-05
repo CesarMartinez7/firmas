@@ -21,6 +21,8 @@
     "@ng-icons/heroicons": "^31.4.0",
     "@tailwindcss/postcss": "^4.1.8",
     "daisyui": "^5.0.43",
+    "ngx-toastr": "^19.0.0",
+    "notyf": "^3.10.0",
     "postcss": "^8.5.4",
     "rxjs": "~7.8.0",
     "tailwindcss": "^4.1.8",

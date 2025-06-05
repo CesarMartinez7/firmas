@@ -17,6 +17,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
+import { HostListener } from '@angular/core';
 
 // Icons ✅
 import { heroArrowUpTray } from '@ng-icons/heroicons/outline';
@@ -26,6 +27,10 @@ import { heroDocumentMinus } from '@ng-icons/heroicons/outline';
 import { heroEye } from '@ng-icons/heroicons/outline';
 import { heroTrash } from '@ng-icons/heroicons/outline';
 import { heroCodeBracket } from '@ng-icons/heroicons/outline';
+import { heroDocumentChartBar } from '@ng-icons/heroicons/outline';
+
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css'; 
 
 @Component({
   selector: 'app-home',
@@ -46,12 +51,23 @@ import { heroCodeBracket } from '@ng-icons/heroicons/outline';
       heroCloudArrowUp,
       heroEye,
       heroCodeBracket,
-      heroTrash
+      heroTrash,
+      heroDocumentChartBar
     }),
   ],
-  styleUrl: './home.component.css',
 })
 export class HomeComponent {
+
+  @HostListener("window:scroll",[])
+  onWindowScroll(){
+    if(window.scrollY === 0) {
+      this.isBlurNavbar = false
+    }else{
+      this.isBlurNavbar = true
+    }
+  }
+
+  isBlurNavbar = false
   isLoading: boolean = false;
   CargasFilesServices = inject(CargasFilesService);
 
@@ -70,6 +86,8 @@ export class HomeComponent {
   baseUrl!: string 
 
   loadFileName : string = ""
+
+  private notyf = new Notyf();
   
   isLoadingResponseConfirm: boolean =   false
   isLoadingResponsePreview: boolean =   false
@@ -120,9 +138,7 @@ export class HomeComponent {
       top: 0,
     });
     this.initForm();
-
     this.datoCurioso = this.datosCuriososComputadoras[this.getRandomNumber()]
-
     this.form.get("accion")?.value === 1 ?  this.form.get("nombre_carpeta")?.disable() : this.form.get("nombre_carpeta")?.disable()
     this.form.get("accion")?.valueChanges.subscribe({
       next: (resp) => {
@@ -130,7 +146,6 @@ export class HomeComponent {
           this.form.get("nombre_carpeta")?.disable()
         }
         if(resp === "1"){
-          console.log("tercera")
           this.form.get("nombre_carpeta")?.enable()
         }
       }
@@ -151,9 +166,10 @@ export class HomeComponent {
   }
   
   handleClickCopy(event: Event) {
-    console.log(event.target)
+    
     let el = event.target as HTMLDivElement
     navigator.clipboard.writeText(el.textContent || "")
+    this.notyf.success("Texto copiado con exito")
   }
 
   handleSubmitComando(event: SubmitEvent) {
@@ -165,10 +181,9 @@ export class HomeComponent {
       nombre_carpeta: `/${this.form.get('nombre_carpeta')?.value}`,
       ruta: `/${this.form.get('ruta')?.value}`,
     };
-
-    console.log(`Aqui esta el body ${body}`);
     this.CargasFilesServices.executeComandoFiles(body).subscribe({
       next: (resp) => {
+        this.notyf.success(`${resp.message}`)
         this.ResponseComandosExec = resp;
         this.isLoadingResponseComand = false
       },
@@ -178,9 +193,10 @@ export class HomeComponent {
     })
   }
 
+
+
   handleSubmitConfirmFiles(event: Event) {
     event.preventDefault()
-    
     this.isLoadingResponseConfirm = true
     if (sessionStorage.getItem('zip_id')) {
       this.CargasFilesServices.confirmFile(
@@ -189,9 +205,10 @@ export class HomeComponent {
         next: (resp) => {
           this.isLoadingResponseConfirm = false
           this.FilesConfirmResponse = resp;
+          this.notyf.success(`${resp.message}`)
         },
         error: (err) => {
-          console.log(`Error ${err}`);
+          this.notyf.error(`Error ${err}`)
         },
       });
     }
@@ -199,7 +216,7 @@ export class HomeComponent {
 
 
   handleClickCancelFlujo(): void {
-    console.log("kdsfdslkf")
+    
     this.isLoadingResponseComand = false
     this.isDisableBtnPreview = false
     this.isLoadingResponsePreview = false
@@ -216,10 +233,7 @@ export class HomeComponent {
 
   onChangeFile(target: Event) {
     let element = target.target as HTMLInputElement;
-    console.log(element);
-
     if (element?.files && element.files.length > 0) {
-      console.log(element.files);
       this.isDisableBtnPreview = false;
       this.loadFileName = element.files[0].name
     } else {
@@ -237,27 +251,23 @@ export class HomeComponent {
     if (fileInput?.files && fileInput.files.length > 0) {
       const file = fileInput.files[0];
       this.isDisableBtnPreview = false;
-
       this.loadFileName = fileInput.files[0].name
-
-      console.log("dsfjdskjfskjflkjf")
-      console.log(this.loadFileName)
-
       const formData = new FormData();
       formData.append('archivo', file);
-
       this.CargasFilesServices.getPrevisualizar(formData).subscribe({
         next: (resp) => {
           this.FilesResponse = resp;
           this.baseUrl = resp.data.ruta_remota
+          this.notyf.success(`${resp.message}`)
           sessionStorage.setItem('zip_id', resp.data.zip_id);
         },
         error: (err) => {
+          this.notyf.error(`${err}`)
           console.error('❌ Error al subir archivo:', err);
         },
       });
     } else {
-      console.log('❌ No hay archivo seleccionado');
+      this.notyf.error("❌ No hay archivo seleccionado")
     }
   }
 }

@@ -1,4 +1,6 @@
-<div class="navbar bg-base-100 shadow-sm sticky top-0 z-50">
+<div class="navbar bg-base-100 shadow-sm sticky top-0 z-50" [ngClass]="{
+  `backdrop-blur-2xl  bg-transparent` : isBlur
+}">
   <div class="navbar-start">
     <div class="dropdown">
       <div tabindex="0"  class="">
@@ -6,6 +8,7 @@
           <div class="flex-col md:flex hidden">
             <span><b>Usuario</b>:   <span class="text-green-400"> {{" "}} {{userName}}</span> </span>
             <span><b>Fecha</b>:  <span class="text-green-400">{{date}}</span> </span>
+            <p>{{isBlur}}</p>
 
           </div>
         </div>
