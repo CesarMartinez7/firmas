@@ -10,7 +10,7 @@ export interface ResponseFilesPrevisualizar {
 }
 
 export interface Data {
-  archivos: {nombre: string; peso_mb: string}[];
+  archivos: {nombre: string; peso_kb: string}[];
   comando: string;
   nombre_zip: string;
   ruta_remota: string;

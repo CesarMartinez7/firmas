@@ -65,15 +65,39 @@ export class HomeComponent {
 
   baseUrl!: string 
 
+  loadFileName : string = ""
   
   isLoadingResponseConfirm: boolean =   false
   isLoadingResponsePreview: boolean =   false
   isLoadingResponseComand: boolean =    false
+
+  datosCuriososComputadoras : string[] = [
+    "La primera computadora electrónica, ENIAC, pesaba más de 27 toneladas.",
+    "El primer ratón de computadora fue hecho de madera en 1964 por Douglas Engelbart.",
+    "Las computadoras modernas pueden realizar más de mil millones de instrucciones por segundo.",
+    "La Ley de Moore predice que el número de transistores en un chip se duplica cada dos años.",
+    "El primer virus informático para PC fue 'Brain', creado en 1986.",
+    "QWERTY es el teclado más usado, aunque no es el más eficiente.",
+    "La primera contraseña usada en una computadora fue en los años 60 en el MIT.",
+    "CAPTCHA fue creado para diferenciar humanos de bots en la web.",
+    "Las supercomputadoras actuales pueden simular el clima global y realizar cálculos cuánticos.",
+    "Apple, Microsoft y HP comenzaron en garajes.",
+    "El primer videojuego de computadora fue 'Spacewar!', creado en 1962.",
+    "En promedio, las personas parpadean menos cuando usan una computadora.",
+    "El término 'bug' (error) se originó por una polilla encontrada en una computadora en 1947.",
+    "El primer email fue enviado por Ray Tomlinson en 1971.",
+    "El primer disco duro de IBM, en 1956, tenía una capacidad de 5 MB y pesaba más de una tonelada."
+  ];
   
   
   
   constructor(private fb: FormBuilder) {}
-  
+
+
+  getRandomNumber(): number {
+    return Math.floor(Math.random() * 10)
+  }
+
   private initForm() {
     this.form = this.fb.group({
       accion: ['2', [Validators.required]],
@@ -90,15 +114,11 @@ export class HomeComponent {
     this.initForm();
 
     this.form.get("accion")?.value === 1 ?  this.form.get("nombre_carpeta")?.disable() : this.form.get("nombre_carpeta")?.disable()
-
     this.form.get("accion")?.valueChanges.subscribe({
       next: (resp) => {
         if(resp === "2") {
           this.form.get("nombre_carpeta")?.disable()
         }
-
-       
-        
         if(resp === "1"){
           console.log("tercera")
           this.form.get("nombre_carpeta")?.enable()
@@ -115,7 +135,7 @@ export class HomeComponent {
     )
   }
   
-  
+
   ngOnDestroy(): void {
     this.sub.unsubscribe()
   }
@@ -125,8 +145,11 @@ export class HomeComponent {
     let el = event.target as HTMLDivElement
     navigator.clipboard.writeText(el.textContent || "")
   }
+
   handleSubmitComando(event: SubmitEvent) {
     event.preventDefault();
+
+    this.isLoadingResponseComand = true
     const body = {
       accion: this.form.get('accion')?.value,
       nombre_carpeta: `/${this.form.get('nombre_carpeta')?.value}`,
@@ -137,6 +160,7 @@ export class HomeComponent {
     this.CargasFilesServices.executeComandoFiles(body).subscribe({
       next: (resp) => {
         this.ResponseComandosExec = resp;
+        this.isLoadingResponseComand = false
       },
       error: (err) => {
         console.error(`Error ${err}`);
@@ -169,10 +193,13 @@ export class HomeComponent {
     if (element?.files && element.files.length > 0) {
       console.log(element.files);
       this.isDisableBtnPreview = false;
+      this.loadFileName = element.files[0].name
     } else {
       this.isDisableBtnPreview = true;
     }
   }
+
+  
 
   handleSubmitFile(): void {
     const fileInput = document.getElementById(
@@ -182,6 +209,11 @@ export class HomeComponent {
     if (fileInput?.files && fileInput.files.length > 0) {
       const file = fileInput.files[0];
       this.isDisableBtnPreview = false;
+
+      this.loadFileName = fileInput.files[0].name
+
+      console.log("dsfjdskjfskjflkjf")
+      console.log(this.loadFileName)
 
       const formData = new FormData();
       formData.append('archivo', file);

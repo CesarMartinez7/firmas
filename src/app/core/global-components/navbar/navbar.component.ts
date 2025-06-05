@@ -1,14 +1,22 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
+
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { heroArrowRightEndOnRectangle } from '@ng-icons/heroicons/outline';
+
+
 @Component({
   selector: 'app-navbar',
-  imports: [],
+  imports: [NgIcon],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css'
+  viewProviders: [provideIcons({heroArrowRightEndOnRectangle})]
 })
 export class NavbarComponent {
 
+  userName = sessionStorage.getItem("username")
   ROUTER = inject(Router)
+
+  date = new Date()
 
   handleClickLogout(){
     console.log("jdsjfsfsf")
