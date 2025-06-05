@@ -91,9 +91,7 @@ export class HomeComponent {
   ResponseComandosMkdir!: ResponseComandoExecMkdir
 
   sub = new Subscription()
-
   baseUrl!: string 
-
   loadFileName : string = ""
 
   

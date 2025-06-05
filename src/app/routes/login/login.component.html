@@ -21,10 +21,10 @@
                   </g>
                 </svg>
                 <input
-                    formControlName="username"
+                  formControlName="username"
                   type="text"
                   required
-                  placeholder="Username"
+                  placeholder="Usuario"
                   pattern="[A-Za-z][A-Za-z0-9\-]*"
                   minlength="3"
                   maxlength="30"
@@ -51,13 +51,13 @@
                     formControlName="password"
                   type="password"
                   required
-                  placeholder="Password"
+                  placeholder="Contraseña"
                   minlength="8"
                   title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
                 />
               </label>
               <a class="text-green-400 underline cursor-pointer" (click)="handleClickCreateAccount()" >No tienes cuenta?</a>
-              <button class="btn btn-neutral uppercase" (click)="handleSubmit()" >Iniciar Sesion</button>
+              <button class="btn btn-neutral uppercase" type="submit" >Iniciar Sesion</button>
         </form>
     </div>
 </div>
