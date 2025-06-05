@@ -132,13 +132,10 @@ export class HomeComponent {
   }
 
   private initForm() {
-
-    
-
     this.form = this.fb.group({
       accion: ['2', [Validators.required]],
       nombre_carpeta: ["", []],
-      ruta: ['/', [Validators.required]],
+      ruta: ['', [Validators.required]],
     });
   }
   
@@ -169,14 +166,11 @@ export class HomeComponent {
       })
     )
   }
-  
-
   ngOnDestroy(): void {
     this.sub.unsubscribe()
   }
   
-  handleClickCopy(event: Event) {
-    
+  handleClickCopy(event: Event) { 
     let el = event.target as HTMLDivElement
     navigator.clipboard.writeText(el.textContent || "")
     this.notyf.success("Texto copiado con exito")
@@ -184,7 +178,6 @@ export class HomeComponent {
 
   handleSubmitComando(event: SubmitEvent) {
     event.preventDefault();
-
     const body = {
       accion: this.form.get('accion')?.value,
       nombre_carpeta: `${this.form.get('nombre_carpeta')?.value}`    ,
@@ -192,13 +185,13 @@ export class HomeComponent {
     };
     
     if(this.form.invalid){
-      this.notyf.error("Campos Invalidos")
+      this.notyf.error("Campos Invalidos, Verifica que este correctamente")
     }else{
-      this.isLs = this.form.get("accion")?.value === 1 ? false : true
+      this.isLs = this.form.get("accion")?.value == 1 ? false : true
       console.log(this.isLs)
       this.isLoadingResponseComand = true
-
       if(this.isLs){
+        console.log("ejecutar ls")
         this.CargasFilesServices.executeComandoLs(body).subscribe({
           next: (resp) => {
             this.ResponseComandosLs = resp
@@ -206,14 +199,22 @@ export class HomeComponent {
             this.notyf.error(`Error ${err}`)
           }
         })
-      }else{
-        this.CargasFilesServices.execueteComandoMkdir(body).subscribe({
-          next: (resp) => {
-            this.ResponseComandosMkdir = resp
-          },error: (err) => {
-            this.notyf.error(`Error ${err}`)
-          }
-        })
+      }
+      
+      if(this.isLs === false){
+        if(this.form.get("nombre_carpeta")?.valid && String(this.form.get("nombre_carpeta")?.value).length > 0 ){
+          console.log("Son validos los campos de mkdir")
+          this.CargasFilesServices.execueteComandoMkdir(body).subscribe({
+            next: (resp) => {
+              this.ResponseComandosMkdir = resp
+            },error: (err) => {
+              this.notyf.error(`Error ${err.message}`)
+            }
+          })
+        }else{
+          this.notyf.error("Error verifica los campos correctamente")
+        }
+
       } 
     }
   }
