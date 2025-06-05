@@ -23,14 +23,16 @@
         >
           @if (ResponseComandosList) {
           <h3 class="font-bold text-2xl my-4">Entrada de Comandos</h3>
-          <select class="select w-full" formControlName="accion">
-            @for (item of ResponseComandosList.data; track $index) {
-            <option [value]="item.Numero" class="flex flex-col">
-              <span>{{ item.Label }} </span>
-            </option>
-            }
-          </select>
-
+          <fieldset class="fieldset w-full">
+            <legend class="fieldset-legend w-full">Comandos</legend>
+            <select class="select w-full" formControlName="accion">
+              @for (item of ResponseComandosList.data; track $index) {
+              <option [value]="item.Numero" class="flex flex-col">
+                <span>{{ item.Label }} </span>
+              </option>
+              }
+            </select>    
+          </fieldset>
           <fieldset class="fieldset w-full">
             <legend class="fieldset-legend w-full">Nombre carpeta</legend>
             <input
