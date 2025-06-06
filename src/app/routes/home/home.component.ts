@@ -94,7 +94,7 @@ export class HomeComponent {
   baseUrl!: string 
   loadFileName : string = ""
 
-  
+  stateFocusGuardarZip: boolean = false
   isLoadingResponseConfirm: boolean =   false
   isLoadingResponsePreview: boolean =   false
   isLoadingResponseComand: boolean =    false
@@ -102,6 +102,7 @@ export class HomeComponent {
   rutaSave: string = ""
 
   datoCurioso!: string
+
   datosCuriososComputadoras : string[] = [
     "La primera computadora electrónica, ENIAC, pesaba más de 27 toneladas.",
     "El primer ratón de computadora fue hecho de madera en 1964 por Douglas Engelbart.",
@@ -120,11 +121,7 @@ export class HomeComponent {
     "El primer disco duro de IBM, en 1956, tenía una capacidad de 5 MB y pesaba más de una tonelada."
   ];
   
-  
-  
   constructor(private fb: FormBuilder) {}
-
-
   getRandomNumber(): number {
     return Math.floor(Math.random() * 10)
   }
@@ -188,15 +185,14 @@ export class HomeComponent {
       this.notyf.error("Campos Invalidos, Verifica que este correctamente")
     }else{
       this.isLs = this.form.get("accion")?.value == 1 ? false : true
-      console.log(this.isLs)
       this.isLoadingResponseComand = true
       if(this.isLs){
-        console.log("ejecutar ls")
         this.CargasFilesServices.executeComandoLs(body).subscribe({
           next: (resp) => {
             this.ResponseComandosLs = resp
           },error: (err) => {
-            this.notyf.error(`Error ${err}`)
+            this.isLoadingResponseComand = false
+            this.notyf.error(`Error ${err.error.message}, Intente mas tarde`)
           }
         })
       }
@@ -246,7 +242,7 @@ export class HomeComponent {
 
 
   handleClickCancelFlujo(): void {
-    
+    this.stateFocusGuardarZip = false
     this.isLoadingResponseComand = false
     this.isDisableBtnPreview = false
     this.isLoadingResponsePreview = false
@@ -254,11 +250,6 @@ export class HomeComponent {
     this.rutaSave = ""
     this.loadFileName = ""
     this.FilesResponse = null
-
-
-    // isLoadingResponseConfirm: boolean =   false
-    // isLoadingResponsePreview: boolean =   false
-    // isLoadingResponseComand: b
   }
 
   onChangeFile(target: Event) {
@@ -290,6 +281,7 @@ export class HomeComponent {
           this.baseUrl = resp.data.ruta_remota
           this.notyf.success(`${resp.message}`)
           sessionStorage.setItem('zip_id', resp.data.zip_id);
+          this.stateFocusGuardarZip = true
         },
         error: (err) => {
           this.notyf.error(`${err}`)

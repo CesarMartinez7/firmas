@@ -1,11 +1,11 @@
 <div class="h-screen w-full flex justify-center items-center bg-gradient-to-t from-base-300 to-base-100 mask-radial-[100%_100%] mask-radial-from-75% mask-radial-at-left  "   >
-    <div class="absolute inset-0 z-0 mask-r-to-a blur-xs mask-x-from-70% mask-x-to-90% mask-y-from-70% mask-y-to-90% bg-green-400/9"  >
+    <div class="absolute inset-0 z-0 mask-r-to-a blur-xs mask-x-from-70% mask-x-to-90% mask-y-from-70% mask-y-to-90% change-color-animation  "   >
         
     </div>
-    <div class="rounded-lg absolute p-4 bg-base-100 w-full md:w-lg inset-[999] shadow-2xl hover:shadow-xl hidden-frame " >
+    <div class="rounded-lg absolute p-4 bg-base-100 w-full md:w-lg inset-[999] shadow-2xl hover:shadow-xl scale-animation " >
         <form [formGroup]="form" class="flex flex-col gap-4" (submit)="handleSubmit()" >
           <div class="w-full flex justify-center items-center flex-col">
-            <h1 class="title text-2xl text-center text-green-400 font-black ">Iniciar sesión</h1>
+            <h1 class="title text-2xl text-center text-green-400 font-black ">Iniciar Sesión</h1>
             <span class="text-center">Bienvenido</span>
           </div>
             <label class="input validator w-full">
@@ -57,7 +57,7 @@
                   title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
                 />
               </label>
-              <a class="text-green-400 underline cursor-pointer" (click)="handleClickCreateAccount()" >No tienes cuenta?</a>
+              <a class="text-green-400 underline cursor-pointer" (click)="handleClickCreateAccount()" >No tienes usuario y contraseña?</a>
               <button class="btn btn-neutral uppercase " type="submit"  [disabled]="form.invalid" >Iniciar Sesion</button>
         </form>
     </div>

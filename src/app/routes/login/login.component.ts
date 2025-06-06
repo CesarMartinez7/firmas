@@ -14,23 +14,17 @@ import 'notyf/notyf.min.css';
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-
   ROUTER = inject(Router)
   AuthService = inject(AuthService)
-
   notify = new Notyf()
   form!: FormGroup
-
-
   ngOnInit(): void {
     this.form = this.fb.group({
       username: ["droides", Validators.required],
       password: ["17111711", Validators.required ]
     })
   }
-
   constructor(private fb: FormBuilder) { }
-
   handleSubmit(): void {
     const body = {
       username: this.form.get("username")?.value,
@@ -54,7 +48,7 @@ export class LoginComponent {
   }
 
   handleClickCreateAccount(): void {
-    window.alert("No se integra esta funcionalidad. ")
+    this.notify.success("No se integra esta funcionalidad")
   }
 
 }

@@ -84,19 +84,60 @@ body {
 }
 
 
+.change-color-animation {
+  animation-name: colors;
+  animation-duration: 9000ms;
+  animation-iteration-count: infinite;
+}
+
+@keyframes colors {
+0% {
+  background-color: #0d2a26;
+}
+40% {
+  background-color: #15272c;
+}
+70% {
+  background-color: #0c2924;
+}
+90% {
+  background-color: #0d2a26;
+}
+100% {
+  background-color: #0d2a26;
+}
+}
+
 
 .hidden-frame{
   animation-name: frames ;
-  animation-duration: 1000ms;
+  animation-duration: 500ms;
 }
 
+
+.scale-animation {
+  animation-name: scalee;
+  animation-duration: 500ms;
+}
+
+@keyframes scalee {
+  0%{
+    scale: 0;
+  }
+  100%{
+    scale: 1;
+  }
+  
+}
 
 
 @keyframes frames {
     0% {
       opacity: 0;
+      
     }
     100% {
       opacity: 1;
+      
     }
 }
