@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { of, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import {
   CargasFilesService,
@@ -39,7 +39,6 @@ import 'notyf/notyf.min.css';
     NavbarComponent,
     NgIcon,
     CommonModule,
-    FooterComponent,
     FormsModule,
     ReactiveFormsModule,
   ],
